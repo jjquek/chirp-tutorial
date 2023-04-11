@@ -4,6 +4,7 @@ import { SignInButton, useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
+import { LoadingPage } from "~/components/LoadSpinner";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -14,7 +15,7 @@ const CreatePostWizard = () => {
         src={user.profileImageUrl}
         alt="Profile Image"
         className="h-14 w-14 rounded-full"
-        height={56}
+        height={56} // required for clerk to not throw error with Next Image.
         width={56}
       />
       <input
@@ -48,12 +49,25 @@ const PostView = (props: PostWithUser) => {
   );
 };
 
+const Feed = () => {
+  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
+  if (postsLoading) return <LoadingPage />;
+  if (!data) return <div>Something went wrong</div>;
+  return (
+    <div className="flex flex-col">
+      {data?.map((postAndAuthor) => (
+        <PostView {...postAndAuthor} key={postAndAuthor.post.id} />
+      ))}
+    </div>
+  );
+};
+
 const Home: NextPage = () => {
-  const user = useUser();
-  const { data, isLoading } = api.posts.getAll.useQuery();
+  const { user, isLoaded: userLoaded, isSignedIn } = useUser();
+  // start fetching once home page loads; React Query lets you just use a cached fetch if it's already completed.
+  api.posts.getAll.useQuery();
   // sanity checks for ensuring that data is loaded.
-  if (isLoading) return <div>Loading...</div>;
-  if (!data) return <div>Something went wrong...</div>;
+  if (!userLoaded) return <div />;
   return (
     <>
       <Head>
@@ -67,18 +81,14 @@ const Home: NextPage = () => {
             className="flex border-b border-slate-400 p-8
           "
           >
-            {!user.isSignedIn && (
+            {isSignedIn && (
               <div className="flex justify-center">
                 <SignInButton />
               </div>
             )}
-            {!!user.isSignedIn && <CreatePostWizard />}
+            {!isSignedIn && <CreatePostWizard />}
           </div>
-          <div className="flex flex-col">
-            {data?.map((postAndAuthor) => (
-              <PostView {...postAndAuthor} key={postAndAuthor.post.id} />
-            ))}
-          </div>
+          <Feed />
         </div>
       </main>
     </>
