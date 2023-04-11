@@ -19,5 +19,5 @@ model Post {
     @@index([authorId])
     // an index will make retrieving the posts much easier.
 }
-// Each time you update the schema, you need to push these local schema changes
+// Each time you update the schema, you need to push these local schema changes using 'npx prisma db push'
 // and run 'npm install' for typescript to register these changes for the project. 
