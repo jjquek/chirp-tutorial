@@ -31,14 +31,20 @@ export const postsRouter = createTRPCRouter({
 
     return posts.map((post) => {
       const author = users.find((user) => user.id === post.authorId);
-      if (!author)
+      if (!author || !author.username)
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Author not found for post.",
         });
+      // console.log(author.username) <= funny bug: registers that username cannot be null but
+      // still need to create the username
       return {
         post,
-        author,
+        //NOTE:  can't just return 'author' because TS doesn't register that 'username' cannot be null despite the type guarding above.
+        author: {
+          ...author,
+          username: author.username,
+        },
       };
     });
   }),

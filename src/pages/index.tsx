@@ -1,7 +1,9 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
+import type { RouterOutputs } from "~/utils/api";
+
 const CreatePostWizard = () => {
   const { user } = useUser();
   if (!user) return null;
@@ -20,6 +22,27 @@ const CreatePostWizard = () => {
     </div>
   );
 };
+
+type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+const PostView = (props: PostWithUser) => {
+  const { post, author } = props;
+  return (
+    <div key={post.id} className="flex gap-3 border-b border-slate-400 p-8">
+      <img
+        src={author.profilePic}
+        alt="Profile Picture"
+        className="h-14 w-14 rounded-full"
+      />
+      <div className="flex flex-col">
+        <div className="flex">
+          <span>{`@${author.username}`}</span>
+        </div>
+        <span>{post.content}</span>
+      </div>
+    </div>
+  );
+};
+
 const Home: NextPage = () => {
   const user = useUser();
   const { data, isLoading } = api.posts.getAll.useQuery();
@@ -47,14 +70,8 @@ const Home: NextPage = () => {
             {!!user.isSignedIn && <CreatePostWizard />}
           </div>
           <div className="flex flex-col">
-            {data?.map(({ post, author }) => (
-              <div
-                key={post.id}
-                className="border-b border-slate-400 p-8
-              "
-              >
-                {post.content}
-              </div>
+            {data?.map((postAndAuthor) => (
+              <PostView {...postAndAuthor} key={postAndAuthor.post.id} />
             ))}
           </div>
         </div>
