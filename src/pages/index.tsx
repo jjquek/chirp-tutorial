@@ -3,16 +3,19 @@ import Head from "next/head";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
+import Image from "next/image";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
   if (!user) return null;
   return (
     <div className="flex w-full gap-3">
-      <img
+      <Image
         src={user.profileImageUrl}
         alt="Profile Image"
         className="h-14 w-14 rounded-full"
+        height={56}
+        width={56}
       />
       <input
         type="text"
@@ -28,13 +31,15 @@ const PostView = (props: PostWithUser) => {
   const { post, author } = props;
   return (
     <div key={post.id} className="flex gap-3 border-b border-slate-400 p-8">
-      <img
+      <Image
         src={author.profilePic}
         alt="Profile Picture"
         className="h-14 w-14 rounded-full"
+        height={56}
+        width={56}
       />
       <div className="flex flex-col">
-        <div className="flex">
+        <div className="flex text-slate-300">
           <span>{`@${author.username}`}</span>
         </div>
         <span>{post.content}</span>
