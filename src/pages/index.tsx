@@ -3,6 +3,27 @@ import Head from "next/head";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 
+import React from "react";
+
+export const CreatePostWizard = () => {
+  const { user } = useUser();
+  if (!user) return null;
+  return (
+    <div className="flex w-full gap-3">
+      <img
+        src={user.profileImageUrl}
+        alt="Profile Image"
+        className="h-14 w-14 rounded-full"
+      />
+      <input
+        type="text"
+        placeholder="type some emojis!"
+        className="flex-grow bg-transparent"
+      />
+    </div>
+  );
+};
+
 const Home: NextPage = () => {
   const user = useUser();
   const { data, isLoading } = api.posts.getAll.useQuery();
@@ -19,7 +40,7 @@ const Home: NextPage = () => {
       <main className="flex h-screen justify-center">
         <div className="h-full w-full border-x border-slate-400 md:max-w-2xl">
           <div
-            className="flex border-b border-slate-400 p-8
+            className="flex border-b border-slate-400 p-4
           "
           >
             {!user.isSignedIn && (
@@ -27,7 +48,7 @@ const Home: NextPage = () => {
                 <SignInButton />
               </div>
             )}
-            {!!user.isSignedIn && <SignOutButton />}
+            {user.isSignedIn && <CreatePostWizard />}
           </div>
           <div className="flex flex-col">
             {data?.map((post) => (
