@@ -7,12 +7,8 @@ const Home: NextPage = () => {
   const user = useUser();
   const { data, isLoading } = api.posts.getAll.useQuery();
   // sanity checks for ensuring that data is loaded.
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (!data) {
-    return <div>Something went wrong...</div>;
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (!data) return <div>Something went wrong...</div>;
   return (
     <>
       <Head>
