@@ -10,8 +10,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Example {
+model Post {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    content String @db.VarChar(255)
+    // mySQL has a weird default String length; we manually set it.
+    authorId String
+    @@index([authorId])
+    // an index will make retrieving the posts much easier.
 }
+// Each time you update the schema, you need to push these local schema changes
+// and run 'npm install' for typescript to register these changes for the project. 
