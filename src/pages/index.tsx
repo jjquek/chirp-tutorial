@@ -6,6 +6,7 @@ import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
 import { LoadingPage } from "~/components/LoadSpinner";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -17,6 +18,9 @@ const CreatePostWizard = () => {
       setInput("");
       // without `void`, TS complains that the promise returned by invalidate isn't being handled. However, we don't need the Promise object returned, so we ask TS to explicitly ignore it with `void` as recommended.
       void ctx.posts.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error("Failed to post; only emojis allowed.");
     },
   });
   if (!user) return null;
