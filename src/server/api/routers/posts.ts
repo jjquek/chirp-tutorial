@@ -1,5 +1,4 @@
 // This code runs on the server, but we can still access it in the same code base.
-import type { User } from "@clerk/nextjs/dist/api";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -9,15 +8,8 @@ import {
   privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 
-const filterUserForClient = (user: User) => {
-  // filtering the User object that gets returned by clerkClient
-  return {
-    id: user.id,
-    username: user.username,
-    profilePic: user.profileImageUrl,
-  };
-};
 export const postsRouter = createTRPCRouter({
   //  a public procedure can be run by anyone regardless of their auth state.
   //  we're fine w non-authenticated users doing this
