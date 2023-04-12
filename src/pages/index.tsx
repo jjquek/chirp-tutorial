@@ -51,6 +51,7 @@ const CreatePostWizard = () => {
           e.preventDefault();
           mutate({ content: input });
         }}
+        disabled={isPosting}
       >
         Post
       </button>

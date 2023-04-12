@@ -57,6 +57,7 @@ export const postsRouter = createTRPCRouter({
     .input(z.object({ content: z.string().emoji().min(1).max(255) }))
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
+      // TODO : implement rate-limiting via upstash and redis (see upstash's documentation for instructions.)
 
       const post = await ctx.prisma.post.create({
         data: {
