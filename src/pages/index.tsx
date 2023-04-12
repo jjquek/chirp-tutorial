@@ -4,12 +4,13 @@ import { SignInButton, useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
-import { LoadingPage } from "~/components/LoadSpinner";
+import LoadSpinner, { LoadingPage } from "~/components/LoadSpinner";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
+  // TODO : refactor this (i.e., useState hook) to use react-hook-form to validate form control input. This vanilla way of handling the keypresses can lead to 'sticky keys' where keypresses are not fluently registered in the UI state. Nonetheless, this is the most straightforward way to get things 'up and running'.
   const [input, setInput] = useState("");
   // `ctx` here is used to gain access to the tRPC cache on the client-side to specify what should happen when a successful mutation (i.e., post) occurs. We are 'refreshing' the feed.
   const ctx = api.useContext();
@@ -44,17 +45,33 @@ const CreatePostWizard = () => {
         className="flex-grow bg-transparent outline-none"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        disabled={isPosting}
-      />
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          mutate({ content: input });
+        // enable 'Enter' submit
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (input !== "") {
+              mutate({ content: input });
+            }
+          }
         }}
         disabled={isPosting}
-      >
-        Post
-      </button>
+      />
+      {input !== "" && !isPosting && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            mutate({ content: input });
+          }}
+          disabled={isPosting}
+        >
+          Post
+        </button>
+      )}
+      {isPosting && (
+        <div className="flex items-center justify-center">
+          <LoadSpinner />
+        </div>
+      )}
     </div>
   );
 };
