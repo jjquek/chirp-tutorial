@@ -10,7 +10,15 @@ import { useState } from "react";
 const CreatePostWizard = () => {
   const { user } = useUser();
   const [input, setInput] = useState("");
-  const { mutate } = api.posts.create.useMutation();
+  // `ctx` here is used to gain access to the tRPC cache on the client-side to specify what should happen when a successful mutation (i.e., post) occurs. We are 'refreshing' the feed.
+  const ctx = api.useContext();
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+    onSuccess: () => {
+      setInput("");
+      // without `void`, TS complains that the promise returned by invalidate isn't being handled. However, we don't need the Promise object returned, so we ask TS to explicitly ignore it with `void` as recommended.
+      void ctx.posts.getAll.invalidate();
+    },
+  });
   if (!user) return null;
   return (
     <div className="flex w-full gap-3">
@@ -27,6 +35,7 @@ const CreatePostWizard = () => {
         className="flex-grow bg-transparent outline-none"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        disabled={isPosting}
       />
       <button
         onClick={(e) => {
