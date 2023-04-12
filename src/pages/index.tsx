@@ -5,9 +5,13 @@ import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
 import { LoadingPage } from "~/components/LoadSpinner";
+import { useState } from "react";
+import { setUncaughtExceptionCaptureCallback } from "process";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
+  const [input, setInput] = useState("");
+  const { mutate } = api.posts.create.useMutation();
   if (!user) return null;
   return (
     <div className="flex w-full gap-3">
@@ -22,7 +26,17 @@ const CreatePostWizard = () => {
         type="text"
         placeholder="Type some emojis!"
         className="flex-grow bg-transparent outline-none"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
       />
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          mutate({ content: input });
+        }}
+      >
+        Post
+      </button>
     </div>
   );
 };
