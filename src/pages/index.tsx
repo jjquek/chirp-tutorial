@@ -19,8 +19,13 @@ const CreatePostWizard = () => {
       // without `void`, TS complains that the promise returned by invalidate isn't being handled. However, we don't need the Promise object returned, so we ask TS to explicitly ignore it with `void` as recommended.
       void ctx.posts.getAll.invalidate();
     },
-    onError: () => {
-      toast.error("Failed to post; only emojis allowed.");
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to post; only emojis allowed. Please try again.");
+      }
     },
   });
   if (!user) return null;
