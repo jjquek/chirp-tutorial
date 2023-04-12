@@ -6,7 +6,6 @@ import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
 import { LoadingPage } from "~/components/LoadSpinner";
 import { useState } from "react";
-import { setUncaughtExceptionCaptureCallback } from "process";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -95,12 +94,12 @@ const Home: NextPage = () => {
             className="flex border-b border-slate-400 p-8
           "
           >
-            {isSignedIn && (
+            {!isSignedIn && (
               <div className="flex justify-center">
                 <SignInButton />
               </div>
             )}
-            {!isSignedIn && <CreatePostWizard />}
+            {isSignedIn && <CreatePostWizard />}
           </div>
           <Feed />
         </div>
