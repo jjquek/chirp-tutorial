@@ -7,6 +7,7 @@ import Image from "next/image";
 import LoadSpinner, { LoadingPage } from "~/components/LoadSpinner";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -90,9 +91,13 @@ const PostView = (props: PostWithUser) => {
       />
       <div className="flex flex-col">
         <div className="flex text-slate-300">
-          <span>{`@${author.username}`}</span>
+          <Link href={`/@${author.username}`}>
+            <span className="font-thin">{author.username}</span>
+          </Link>
         </div>
-        <span>{post.content}</span>
+        <Link href={`/post/${post.id}`}>
+          <span>{post.content}</span>
+        </Link>
       </div>
     </div>
   );
