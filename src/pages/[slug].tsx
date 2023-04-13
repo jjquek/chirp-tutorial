@@ -2,6 +2,10 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
+import { PageLayout } from "~/components/PageLayout";
+import Image from "next/image";
+import LoadSpinner from "~/components/LoadSpinner";
+import { PostView } from "~/components/PostView";
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
@@ -53,24 +57,11 @@ const ProfilePage: NextPage<{ username: string }> = () => {
   );
 };
 
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import { appRouter } from "~/server/api/root";
-import superjson from "superjson";
-import { prisma } from "~/server/db";
-import { PageLayout } from "~/components/PageLayout";
-import Image from "next/image";
-import LoadSpinner from "~/components/LoadSpinner";
-import { PostView } from "~/components/PostView";
+import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
 // note: not sure why it wasn't immediately being ported in via VSCode Intellisense.
 export const getStaticProps: GetStaticProps = async (context) => {
   // We use getStaticProps because this is a page that (1) needs to fetch data, (2) won't change that frequently. The page is pre-rendered by next at build time such that when the user requests for the page, the page can be served fully rendered. There doesn't need to be more data fetching.
-  const ssg = createServerSideHelpers({
-    router: appRouter,
-    // TODO : figure out why there's a userId included as a param?
-    // userId is required by the type definition provided in this `createServerSideHelpers` function. We don't need any specific userId though so we're just stubbing it with null.
-    ctx: { prisma, userId: null },
-    transformer: superjson,
-  });
+  const ssg = generateSSGHelper();
   const slug = context.params?.slug;
   // TODO : refactor this-- should instead redirect to another page.
   if (typeof slug !== "string") throw new Error("no slug");

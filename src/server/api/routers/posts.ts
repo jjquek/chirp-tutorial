@@ -44,6 +44,16 @@ export const addUserDataToPosts = async (posts: Post[]) => {
 export const postsRouter = createTRPCRouter({
   //  a public procedure can be run by anyone regardless of their auth state.
   //  we're fine w non-authenticated users doing this
+  getById: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.userId },
+      });
+      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+      return (await addUserDataToPosts([post]))[0];
+    }),
+
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       take: 100,
