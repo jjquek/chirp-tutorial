@@ -7,6 +7,7 @@ import LoadSpinner, { LoadingPage } from "~/components/LoadSpinner";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { PageLayout } from "~/components/PageLayout";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -123,22 +124,20 @@ const Home: NextPage = () => {
   if (!userLoaded) return <div />;
   return (
     <>
-      <main className="flex h-screen justify-center">
-        <div className="h-full w-full border-x border-slate-400 md:max-w-2xl">
-          <div
-            className="flex border-b border-slate-400 p-8
+      <PageLayout>
+        <div
+          className="flex border-b border-slate-400 p-8
           "
-          >
-            {!isSignedIn && (
-              <div className="flex justify-center">
-                <SignInButton />
-              </div>
-            )}
-            {isSignedIn && <CreatePostWizard />}
-          </div>
-          <Feed />
+        >
+          {!isSignedIn && (
+            <div className="flex justify-center">
+              <SignInButton />
+            </div>
+          )}
+          {isSignedIn && <CreatePostWizard />}
         </div>
-      </main>
+        <Feed />
+      </PageLayout>
     </>
   );
 };
