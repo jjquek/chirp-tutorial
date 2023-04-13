@@ -17,7 +17,21 @@ const ProfilePage: NextPage<{ username: string }> = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-        <div>{data.username}</div>
+        <div className="relative h-36 bg-slate-700">
+          <Image
+            src={data.profilePic}
+            alt={`${data.username ?? ""}'s profile picture`}
+            width={128}
+            height={128}
+            className="absolute bottom-0 left-0 -mb-16 ml-4 rounded-full border-4 border-black"
+          />
+        </div>
+        {/* add a div which acts as spacer to push username below the absolutely positioned Profile Picture */}
+        <div className="h-12"></div>
+        <div className="p-8 text-2xl font-bold">{`@${
+          data.username ?? ""
+        }`}</div>
+        <div className="w-full border-b border-slate-500"></div>
       </PageLayout>
     </>
   );
@@ -28,6 +42,7 @@ import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
 import { prisma } from "~/server/db";
 import { PageLayout } from "~/components/PageLayout";
+import Image from "next/image";
 // note: not sure why it wasn't immediately being ported in via VSCode Intellisense.
 export const getStaticProps: GetStaticProps = async (context) => {
   // We use getStaticProps because this is a page that (1) needs to fetch data, (2) won't change that frequently. The page is pre-rendered by next at build time such that when the user requests for the page, the page can be served fully rendered. There doesn't need to be more data fetching.
