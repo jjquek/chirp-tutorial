@@ -3,6 +3,21 @@ import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 
+const ProfileFeed = (props: { userId: string }) => {
+  const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
+    userId: props.userId,
+  });
+  if (isLoading) return <LoadSpinner />;
+  if (!data || data.length === 0) return <div>User has not posted.</div>;
+  return (
+    <div className="flex flex-col">
+      {data.map((postAndAuthor) => (
+        <PostView {...postAndAuthor} key={postAndAuthor.post.id} />
+      ))}
+    </div>
+  );
+};
+
 const ProfilePage: NextPage<{ username: string }> = () => {
   const { data } = api.profile.getUserByUsername.useQuery({
     // no loading state because the page is fully rendered once delivered by the server. (See notes and comments on `getStaticProps` below)
@@ -32,6 +47,7 @@ const ProfilePage: NextPage<{ username: string }> = () => {
           data.username ?? ""
         }`}</div>
         <div className="w-full border-b border-slate-500"></div>
+        <ProfileFeed userId={data.id} />
       </PageLayout>
     </>
   );
@@ -43,6 +59,8 @@ import superjson from "superjson";
 import { prisma } from "~/server/db";
 import { PageLayout } from "~/components/PageLayout";
 import Image from "next/image";
+import LoadSpinner from "~/components/LoadSpinner";
+import { PostView } from "~/components/PostView";
 // note: not sure why it wasn't immediately being ported in via VSCode Intellisense.
 export const getStaticProps: GetStaticProps = async (context) => {
   // We use getStaticProps because this is a page that (1) needs to fetch data, (2) won't change that frequently. The page is pre-rendered by next at build time such that when the user requests for the page, the page can be served fully rendered. There doesn't need to be more data fetching.
