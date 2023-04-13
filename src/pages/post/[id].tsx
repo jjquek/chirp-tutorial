@@ -9,7 +9,6 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
     // no loading state because the page is fully rendered once delivered by the server. (See notes and comments on `getStaticProps` below)
     userId: id,
   });
-  // TODO : figure out why this if statement runs very briefly the FIRST time I try to view a post on the page. It goes 'Something went wrong...', but then renders afterwards. Code is practically the same as Profile view but the latter, as expected, doesn't have loading state.
   if (!data) return <div>Something went wrong...</div>;
   return (
     <>
@@ -33,8 +32,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const id = context.params?.id;
   // TODO : refactor this-- should instead redirect to another page.
   if (typeof id !== "string") throw new Error("no slug");
-  const username = id.replace("@", "");
-  await ssg.profile.getUserByUsername.prefetch({ username });
+  await ssg.posts.getById.prefetch({ userId: id });
   return {
     props: {
       trpcState: ssg.dehydrate(),
