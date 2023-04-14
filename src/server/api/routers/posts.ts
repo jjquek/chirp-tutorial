@@ -23,11 +23,23 @@ export const addUserDataToPosts = async (posts: Post[]) => {
 
   return posts.map((post) => {
     const author = users.find((user) => user.id === post.authorId);
-    if (!author || !author.username)
+    // need to handle the case where there's an author but they only have an external username (i.e., authed with something other than GitHub)
+    if (!author) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Author not found for post.",
+        message: `Author for post not found. POST ID: ${post.id}, USER ID: ${post.authorId}`,
       });
+    }
+    if (!author.username) {
+      //check if we can use an external username
+      if (!author.externalUsername) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Author has no external username: ${author.id}`,
+        });
+      }
+      author.username = author.externalUsername;
+    }
     // console.log(author.username) <= funny bug: registers that username cannot be null but
     // still need to create the username property afresh below
     return {
