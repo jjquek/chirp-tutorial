@@ -10,7 +10,7 @@ export const profileRouter = createTRPCRouter({
     .input(z.object({ username: z.string() }))
     .query(async ({ input }) => {
       console.log(input);
-      // TODO : understand why 'getUser(input.username) doesn't work.
+      // TODO : understand why 'getUser(input.username) doesn't work i.e., why we must use getUserList
       const [user] = await clerkClient.users.getUserList({
         username: [input.username],
       });
