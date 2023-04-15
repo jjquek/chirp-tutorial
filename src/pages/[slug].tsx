@@ -22,10 +22,10 @@ const ProfileFeed = (props: { userId: string }) => {
   );
 };
 
-const ProfilePage: NextPage<{ username: string }> = () => {
+const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({
     // no loading state because the page is fully rendered once delivered by the server. (See notes and comments on `getStaticProps` below)
-    username: "jjquek",
+    username: username,
   });
   if (!data) return <div>Something went wrong...</div>;
   return (
