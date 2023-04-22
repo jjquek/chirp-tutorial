@@ -31,7 +31,7 @@ const CreatePostWizard = () => {
   });
   if (!user) return null;
   return (
-    <div className="flex w-full gap-3">
+    <div className="flex w-full gap-3 p-8">
       <Image
         src={user.profileImageUrl}
         alt="Profile Image"
@@ -89,6 +89,14 @@ const Feed = () => {
   );
 };
 
+const Header = () => {
+  return (
+    <div className="flex justify-center rounded-lg border py-6 ">
+      <h1 className="text-4xl font-bold leading-7">emoji only twitter</h1>
+    </div>
+  );
+};
+
 const Home: NextPage = () => {
   // TODO : figure out why back button doesn't work-- can't go back from Post or Profile views.
   const { isLoaded: userLoaded, isSignedIn } = useUser();
@@ -99,12 +107,14 @@ const Home: NextPage = () => {
   return (
     <>
       <PageLayout>
+        <Header />
         <div
-          className="flex border-b border-slate-400 p-8
+          className="flex border-b border-slate-400 
           "
         >
+          {/* TODO : redesign this sign in button -> at least so it looks more like a button */}
           {!isSignedIn && (
-            <div className="flex justify-center">
+            <div className=" flex justify-center p-4 ">
               <SignInButton />
             </div>
           )}
