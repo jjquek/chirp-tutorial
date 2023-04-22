@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
-export const PostView = (props: PostWithUser) => {
+export const Post = (props: PostWithUser) => {
   const { post, author } = props;
   return (
     <div key={post.id} className="flex gap-3 border-b border-slate-400 p-8">

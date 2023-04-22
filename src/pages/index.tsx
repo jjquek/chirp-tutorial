@@ -6,7 +6,7 @@ import LoadSpinner, { LoadingPage } from "~/components/LoadSpinner";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { PageLayout } from "~/components/PageLayout";
-import { PostView } from "~/components/PostView";
+import { Post } from "~/components/Post";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -83,7 +83,7 @@ const Feed = () => {
   return (
     <div className="flex flex-col">
       {data?.map((postAndAuthor) => (
-        <PostView {...postAndAuthor} key={postAndAuthor.post.id} />
+        <Post {...postAndAuthor} key={postAndAuthor.post.id} />
       ))}
     </div>
   );

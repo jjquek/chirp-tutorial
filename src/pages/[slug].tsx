@@ -5,7 +5,7 @@ import { api } from "~/utils/api";
 import { PageLayout } from "~/components/PageLayout";
 import Image from "next/image";
 import LoadSpinner from "~/components/LoadSpinner";
-import { PostView } from "~/components/PostView";
+import { Post } from "~/components/Post";
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
@@ -16,7 +16,7 @@ const ProfileFeed = (props: { userId: string }) => {
   return (
     <div className="flex flex-col">
       {data.map((postAndAuthor) => (
-        <PostView {...postAndAuthor} key={postAndAuthor.post.id} />
+        <Post {...postAndAuthor} key={postAndAuthor.post.id} />
       ))}
     </div>
   );

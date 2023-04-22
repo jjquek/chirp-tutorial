@@ -1,7 +1,7 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
-import { PostView } from "~/components/PostView";
+import { Post } from "~/components/Post";
 import { PageLayout } from "~/components/PageLayout";
 
 const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
@@ -18,7 +18,7 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-        <PostView {...data} />
+        <Post {...data} />
       </PageLayout>
     </>
   );
