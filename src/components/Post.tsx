@@ -6,7 +6,10 @@ type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 export const Post = (props: PostWithUser) => {
   const { post, author } = props;
   return (
-    <div key={post.id} className="flex gap-3 border-b border-slate-400 p-8">
+    <div
+      key={post.id}
+      className="flex gap-3 border border-slate-600 p-8 hover:border-2 hover:border-indigo-700"
+    >
       <Image
         src={author.profilePic}
         alt="Profile Picture"
@@ -15,7 +18,7 @@ export const Post = (props: PostWithUser) => {
         width={56}
       />
       <div className="flex flex-col">
-        <div className="flex text-slate-300">
+        <div className="flex text-slate-300 hover:text-slate-500">
           <Link href={`/@${author.username}`}>
             <span className="font-thin">{author.username}</span>
           </Link>
