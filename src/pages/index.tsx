@@ -98,7 +98,6 @@ const Header = () => {
 };
 
 const Home: NextPage = () => {
-  // TODO : figure out why back button doesn't work-- can't go back from Post or Profile views.
   const { isLoaded: userLoaded, isSignedIn } = useUser();
   // start fetching once home page loads; React Query lets you just use a cached fetch if it's already completed.
   api.posts.getAll.useQuery();
